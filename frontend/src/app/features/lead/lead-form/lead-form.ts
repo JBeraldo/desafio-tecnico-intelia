@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,7 @@ import { LeadService } from '../lead.service';
 import { CommonModule } from '@angular/common';
 import { FormInput } from '../../../shared/components/form-input/form-input';
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
+import { groupBy, Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-lead-form',
@@ -15,9 +16,10 @@ import { FormDateInput } from '../../../shared/components/form-date-input/form-d
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.scss',
 })
-export class LeadForm {
+export class LeadForm implements OnInit,OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private leadService = inject(LeadService);
+  private lead$:Observable<Lead|null>
 
   firstStepForm = this._formBuilder.group({
     fullName: [null, [Validators.required]],
@@ -37,6 +39,25 @@ export class LeadForm {
   });
 
   private leadForm: Array<FormGroup> = [this.firstStepForm, this.secondStepForm, this.thirdStepForm]
+  private readonly unsub$ = new Subject<void>();
+
+  constructor(){
+    this.lead$ = this.leadService.lead$
+  }
+
+  ngOnInit(): void {
+    this.lead$.pipe(takeUntil(this.unsub$)).subscribe((lead)=>{
+      for(let group of this.leadForm){
+          group.patchValue({...lead})
+      }
+    })
+    this.leadService.get()
+  }
+
+  ngOnDestroy(): void {
+    this.unsub$.next()
+    this.unsub$.complete()
+  } 
 
   submit() {
     let hasChanged = this.leadForm.some((group) => group.dirty)
