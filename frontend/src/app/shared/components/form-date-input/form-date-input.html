@@ -1,7 +1,7 @@
 <mat-form-field class="w-full">
     <mat-label>{{ label() }}</mat-label>
 
-    <input matInput [matDatepicker]="picker" [placeholder]="placeholder()" [formControl]="control()"
+    <input matInput [matDatepicker]="picker" (dateChange)="onDateChange($event)" [placeholder]="placeholder()" [formControl]="control()"
         [required]="required()" />
 
     <mat-hint>DD/MM/YYYY</mat-hint>

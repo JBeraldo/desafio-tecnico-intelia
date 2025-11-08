@@ -3,7 +3,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatStepperModule } from '@angular/material/stepper';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { Lead } from '../lead.model';
 import { LeadService } from '../lead.service';
 import { CommonModule } from '@angular/common';
@@ -13,7 +12,6 @@ import { FormDateInput } from '../../../shared/components/form-date-input/form-d
 @Component({
   selector: 'app-lead-form',
   imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, CommonModule,FormInput,FormDateInput],
-  providers: [provideNativeDateAdapter()],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.scss',
 })
