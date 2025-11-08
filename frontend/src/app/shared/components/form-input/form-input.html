@@ -1,0 +1,29 @@
+<mat-form-field class="w-full">
+  <mat-label>{{ label() }}</mat-label>
+
+  <input matInput [type]="type()" [placeholder]="placeholder()" [formControl]="control()" [mask]="mask()" [required]="required()" />
+
+  @if (control().hasError('required')) {
+  <mat-error>Campo obrigatório</mat-error>
+  }
+
+  @if (control().hasError('email')) {
+  <mat-error>Email inválido</mat-error>
+  }
+
+  @if (control().hasError('minlength')) {
+  <mat-error>
+    Mínimo de {{ control().getError('minlength')?.requiredLength }} caracteres
+  </mat-error>
+  }
+
+  @if (control().hasError('maxlength')) {
+  <mat-error>
+    Máximo de {{ control().getError('maxlength')?.requiredLength }} caracteres
+  </mat-error>
+  }
+
+  @if (control().hasError('pattern')) {
+  <mat-error>Formato inválido</mat-error>
+  }
+</mat-form-field>

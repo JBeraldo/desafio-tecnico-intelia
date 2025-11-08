@@ -1,0 +1,25 @@
+<mat-form-field class="w-full">
+    <mat-label>{{ label() }}</mat-label>
+
+    <input matInput [matDatepicker]="picker" [placeholder]="placeholder()" [formControl]="control()"
+        [required]="required()" />
+
+    <mat-hint>DD/MM/YYYY</mat-hint>
+
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+
+    <!-- ✅ Validation errors -->
+    @if (control().hasError('required')) {
+    <mat-error>Campo obrigatório</mat-error>
+    }
+    @if (control().hasError('matDatepickerParse')) {
+    <mat-error>Data inválida</mat-error>
+    }
+    @if (control().hasError('matDatepickerMin')) {
+    <mat-error>Data muito antiga</mat-error>
+    }
+    @if (control().hasError('matDatepickerMax')) {
+    <mat-error>Data muito recente</mat-error>
+    }
+</mat-form-field>

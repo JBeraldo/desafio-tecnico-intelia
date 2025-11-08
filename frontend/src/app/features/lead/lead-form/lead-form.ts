@@ -3,18 +3,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { Lead } from '../lead.model';
 import { LeadService } from '../lead.service';
-import { NgxMaskDirective } from 'ngx-mask';
 import { CommonModule } from '@angular/common';
+import { FormInput } from '../../../shared/components/form-input/form-input';
+import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
 
 @Component({
   selector: 'app-lead-form',
-  imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, NgxMaskDirective, CommonModule],
+  imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, CommonModule,FormInput,FormDateInput],
   providers: [provideNativeDateAdapter()],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.scss',

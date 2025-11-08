@@ -3,104 +3,93 @@
         <mat-card-title></mat-card-title>
         <mat-card-subtitle></mat-card-subtitle>
     </mat-card-header>
+
     <mat-card-content>
         <mat-stepper orientation="horizontal" (selectionChange)="submit()" [linear]="true" #stepper>
+
+            <!-- STEP 1 -->
             <mat-step [stepControl]="firstStepForm">
                 <form [formGroup]="firstStepForm" class="grid grid-cols-1 gap-4">
                     <ng-template matStepLabel>Seus dados básicos</ng-template>
-                    <mat-form-field>
-                        <mat-label>Nome Completo</mat-label>
-                        <input matInput placeholder="José Silveira" [formControl]="firstStepForm.controls.fullName"
-                            required>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Email</mat-label>
-                        <input matInput placeholder="jose.silveira@intelia.com.br"
-                            [formControl]="firstStepForm.controls.email" required>
 
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Data de Nascimento</mat-label>
-                        <input matInput [matDatepicker]="picker" [formControl]="firstStepForm.controls.birthDate">
-                        <mat-hint>DD/MM/YYYY</mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
+                    <app-input label="Nome Completo" placeholder="José Silveira"
+                        [control]="firstStepForm.controls.fullName" >
+                    </app-input>
 
-                    </mat-form-field>
+                    <app-input label="Email" placeholder="jose.silveira@intelia.com.br"
+                        [control]="firstStepForm.controls.email" type="email" >
+                    </app-input>
+
+                    <app-date-input label="Data de Nascimento" placeholder="DD/MM/YYYY"
+                        [control]="firstStepForm.controls.birthDate" >
+                    </app-date-input>
+
                     <div>
                         <button matButton matStepperNext>Próximo</button>
                     </div>
                 </form>
             </mat-step>
+
+            <!-- STEP 2 -->
             <mat-step [stepControl]="secondStepForm">
                 <form [formGroup]="secondStepForm" class="grid grid-cols-2 gap-4">
                     <ng-template matStepLabel>Seus dados de endereço</ng-template>
-                    <mat-form-field>
-                        <mat-label>Logradouro</mat-label>
-                        <input matInput [formControl]="secondStepForm.controls.street"
-                            placeholder="Abílio Carvalho Bastos" required>
 
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Número</mat-label>
-                        <input matInput type="number" mask="0*" [dropSpecialCharacters]="true"
-                            [formControl]="secondStepForm.controls.street_number" placeholder="1197" required>
+                    <app-input label="Logradouro" placeholder="Abílio Carvalho Bastos"
+                        [control]="secondStepForm.controls.street" >
+                    </app-input>
 
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>UF</mat-label>
-                        <input matInput mask="SS" [formControl]="secondStepForm.controls.state" placeholder="PR"
-                            required>
+                    <app-input label="Número" placeholder="1197" type="number" mask="0*"
+                        [control]="secondStepForm.controls.street_number">
+                    </app-input>
 
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Cidade</mat-label>
-                        <input matInput [formControl]="secondStepForm.controls.city" placeholder="Irati" required>
+                    <app-input label="UF" placeholder="PR" mask="SS" [control]="secondStepForm.controls.state" >
+                    </app-input>
 
-                    </mat-form-field>
-                    <mat-form-field class="col-span-2">
-                        <mat-label>CEP</mat-label>
-                        <input matInput mask="00000-000" [formControl]="secondStepForm.controls.postal_code"
-                            placeholder="84503-407" required>
+                    <app-input label="Cidade" placeholder="Irati" [control]="secondStepForm.controls.city" >
+                    </app-input>
 
-                    </mat-form-field>
+                    <app-input class="col-span-2" label="CEP" placeholder="84503-407" mask="00000-000"
+                        [control]="secondStepForm.controls.postal_code" >
+                    </app-input>
+
                     <div>
                         <button matButton matStepperPrevious>Voltar</button>
                         <button matButton matStepperNext>Próximo</button>
                     </div>
                 </form>
             </mat-step>
+
+            <!-- STEP 3 -->
             <mat-step [stepControl]="thirdStepForm">
                 <form [formGroup]="thirdStepForm" class="grid col-2 row-2 gap-4">
                     <ng-template matStepLabel>Dados de Contato</ng-template>
-                    <mat-form-field>
-                        <mat-label>Telefone Celular</mat-label>
-                        <input matInput mask="(00) 00000-0000" [formControl]="thirdStepForm.controls.cellphone"
-                            placeholder="(00) 00000-0000" required>
 
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Telefone Fixo</mat-label>
-                        <input matInput mask="(00) 0000-0000" [formControl]="thirdStepForm.controls.landline"
-                            placeholder="(00) 0000-0000">
+                    <app-input label="Telefone Celular" placeholder="(00) 00000-0000" mask="(00) 00000-0000"
+                        [control]="thirdStepForm.controls.cellphone" >
+                    </app-input>
 
-                    </mat-form-field>
+                    <app-input label="Telefone Fixo" placeholder="(00) 0000-0000" mask="(00) 0000-0000"
+                        [control]="thirdStepForm.controls.landline">
+                    </app-input>
+
                     <div>
                         <button matButton matStepperPrevious>Voltar</button>
                         <button matButton matStepperNext>Próximo</button>
                     </div>
                 </form>
             </mat-step>
+
+            <!-- STEP 4 -->
             <mat-step>
-                <ng-template matStepLabel>Concluído </ng-template>
-                <p>You are now done.</p>
+                <ng-template matStepLabel>Concluído</ng-template>
+                <p>Você finalizou o cadastro.</p>
                 <div>
                     <button matButton matStepperPrevious>Voltar</button>
-                    <button matButton (click)="stepper.reset()">Reset</button>
+                    <button matButton (click)="stepper.reset()">Resetar</button>
                 </div>
             </mat-step>
+
         </mat-stepper>
-
     </mat-card-content>
-
 </mat-card>
