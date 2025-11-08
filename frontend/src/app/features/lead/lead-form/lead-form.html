@@ -17,6 +17,7 @@
                         <mat-label>Email</mat-label>
                         <input matInput placeholder="jose.silveira@intelia.com.br"
                             [formControl]="firstStepForm.controls.email" required>
+
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Data de Nascimento</mat-label>
@@ -24,6 +25,7 @@
                         <mat-hint>DD/MM/YYYY</mat-hint>
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
+
                     </mat-form-field>
                     <div>
                         <button matButton matStepperNext>Próximo</button>
@@ -36,27 +38,31 @@
                     <mat-form-field>
                         <mat-label>Logradouro</mat-label>
                         <input matInput [formControl]="secondStepForm.controls.street"
-                            placeholder="Ex. 1 Main St, New York, NY" required>
+                            placeholder="Abílio Carvalho Bastos" required>
+
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Número</mat-label>
-                        <input matInput [formControl]="secondStepForm.controls.street_number" placeholder="1197"
-                            required>
+                        <input matInput type="number" mask="0*" [dropSpecialCharacters]="true"
+                            [formControl]="secondStepForm.controls.street_number" placeholder="1197" required>
+
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>UF</mat-label>
-                        <input matInput [formControl]="secondStepForm.controls.state"
-                            placeholder="Ex. 1 Main St, New York, NY" required>
+                        <input matInput mask="SS" [formControl]="secondStepForm.controls.state" placeholder="PR"
+                            required>
+
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Cidade</mat-label>
-                        <input matInput [formControl]="secondStepForm.controls.city"
-                            placeholder="Ex. 1 Main St, New York, NY" required>
+                        <input matInput [formControl]="secondStepForm.controls.city" placeholder="Irati" required>
+
                     </mat-form-field>
                     <mat-form-field class="col-span-2">
                         <mat-label>CEP</mat-label>
-                        <input matInput [formControl]="secondStepForm.controls.postal_code"
-                            placeholder="Ex. 1 Main St, New York, NY" required>
+                        <input matInput mask="00000-000" [formControl]="secondStepForm.controls.postal_code"
+                            placeholder="84503-407" required>
+
                     </mat-form-field>
                     <div>
                         <button matButton matStepperPrevious>Voltar</button>
@@ -69,13 +75,15 @@
                     <ng-template matStepLabel>Dados de Contato</ng-template>
                     <mat-form-field>
                         <mat-label>Telefone Celular</mat-label>
-                        <input matInput [formControl]="thirdStepForm.controls.cellphone"
-                            placeholder="Ex. 1 Main St, New York, NY" required>
+                        <input matInput mask="(00) 00000-0000" [formControl]="thirdStepForm.controls.cellphone"
+                            placeholder="(00) 00000-0000" required>
+
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Telefone Fixo</mat-label>
-                        <input matInput [formControl]="thirdStepForm.controls.cellphone"
-                            placeholder="Ex. 1 Main St, New York, NY">
+                        <input matInput mask="(00) 0000-0000" [formControl]="thirdStepForm.controls.landline"
+                            placeholder="(00) 0000-0000">
+
                     </mat-form-field>
                     <div>
                         <button matButton matStepperPrevious>Voltar</button>

@@ -1,18 +1,20 @@
 import { Component, inject } from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup} from '@angular/forms';
-import {MatCardModule} from '@angular/material/card';
-import {MatStepperModule} from '@angular/material/stepper';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { Lead } from '../lead.model';
 import { LeadService } from '../lead.service';
+import { NgxMaskDirective } from 'ngx-mask';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-lead-form',
-  imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, NgxMaskDirective, CommonModule],
   providers: [provideNativeDateAdapter()],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.scss',
@@ -24,27 +26,26 @@ export class LeadForm {
   firstStepForm = this._formBuilder.group({
     fullName: [null, [Validators.required]],
     birthDate: [null, [Validators.required]],
-    email: [null, [Validators.required,Validators.email]]
+    email: [null, [Validators.required, Validators.email]]
   });
   secondStepForm = this._formBuilder.group({
     street: [null, [Validators.required]],
-        street_number: [null, [Validators.required]],
-            postal_code: [null, [Validators.required]],
-                city: [null, [Validators.required]],
-                state: [null, [Validators.required]]
+    street_number: [null, [Validators.required]],
+    postal_code: [null, [Validators.required]],
+    city: [null, [Validators.required]],
+    state: [null, [Validators.required,Validators.pattern('^[A-Z]{2}$')]]
   });
   thirdStepForm = this._formBuilder.group({
-    landline: [null, []],
+    landline: [null],
     cellphone: [null, [Validators.required]]
   });
 
-  private leadForm: Array<FormGroup> = [this.firstStepForm,this.secondStepForm,this.thirdStepForm]
+  private leadForm: Array<FormGroup> = [this.firstStepForm, this.secondStepForm, this.thirdStepForm]
 
-  submit(){
+  submit() {
     let hasChanged = this.leadForm.some((group) => group.dirty)
-    if(hasChanged)
-    {
-      let leadFormData:Lead = {
+    if (hasChanged) {
+      let leadFormData: Lead = {
         ...this.firstStepForm.getRawValue(),
         ...this.secondStepForm.getRawValue(),
         ...this.thirdStepForm.getRawValue()
@@ -52,7 +53,7 @@ export class LeadForm {
 
       this.leadService.store(leadFormData);
 
-      for(let step of this.leadForm){
+      for (let step of this.leadForm) {
         step.markAsPristine()
       }
     }
