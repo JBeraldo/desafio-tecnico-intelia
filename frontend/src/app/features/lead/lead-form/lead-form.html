@@ -10,7 +10,7 @@
             <!-- STEP 1 -->
             <mat-step [stepControl]="firstStepForm">
                 <form [formGroup]="firstStepForm" class="grid grid-cols-1  gap-4">
-                    <ng-template matStepLabel>Seus dados básicos</ng-template>
+                    <ng-template matStepLabel>Dados básicos</ng-template>
 
                     <app-input label="Nome Completo" placeholder="José Silveira"
                         [control]="firstStepForm.controls.fullName" >
@@ -33,7 +33,7 @@
             <!-- STEP 2 -->
             <mat-step [stepControl]="secondStepForm">
                 <form [formGroup]="secondStepForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <ng-template matStepLabel>Seus dados de endereço</ng-template>
+                    <ng-template matStepLabel>Dados de endereço</ng-template>
 
                     <app-input label="Logradouro" placeholder="Abílio Carvalho Bastos"
                         [control]="secondStepForm.controls.street" >
@@ -86,7 +86,6 @@
                 <p>Você finalizou o cadastro.</p>
                 <div>
                     <button matButton matStepperPrevious>Voltar</button>
-                    <button matButton (click)="stepper.reset()">Resetar</button>
                 </div>
             </mat-step>
 

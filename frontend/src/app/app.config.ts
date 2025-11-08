@@ -18,6 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideDateFnsAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: ptBR },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
-    { provide: STEPPER_GLOBAL_OPTIONS,useValue: { showError: true }}
+    { provide: STEPPER_GLOBAL_OPTIONS,useValue: { showError: true, displayDefaultIndicatorType: false }}
   ]
 };
