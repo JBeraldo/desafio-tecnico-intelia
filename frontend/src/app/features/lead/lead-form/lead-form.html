@@ -5,11 +5,11 @@
     </mat-card-header>
 
     <mat-card-content>
-        <mat-stepper orientation="horizontal" (selectionChange)="submit()" [linear]="true" #stepper>
+        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="submit()" [linear]="true" #stepper>
 
             <!-- STEP 1 -->
             <mat-step [stepControl]="firstStepForm">
-                <form [formGroup]="firstStepForm" class="grid grid-cols-1 gap-4">
+                <form [formGroup]="firstStepForm" class="grid grid-cols-1  gap-4">
                     <ng-template matStepLabel>Seus dados básicos</ng-template>
 
                     <app-input label="Nome Completo" placeholder="José Silveira"
@@ -32,7 +32,7 @@
 
             <!-- STEP 2 -->
             <mat-step [stepControl]="secondStepForm">
-                <form [formGroup]="secondStepForm" class="grid grid-cols-2 gap-4">
+                <form [formGroup]="secondStepForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <ng-template matStepLabel>Seus dados de endereço</ng-template>
 
                     <app-input label="Logradouro" placeholder="Abílio Carvalho Bastos"
@@ -49,7 +49,7 @@
                     <app-input label="Cidade" placeholder="Irati" [control]="secondStepForm.controls.city" >
                     </app-input>
 
-                    <app-input class="col-span-2" label="CEP" placeholder="84503-407" mask="00000-000"
+                    <app-input class="md:col-span-2" label="CEP" placeholder="84503-407" mask="00000-000"
                         [control]="secondStepForm.controls.postal_code" >
                     </app-input>
 
