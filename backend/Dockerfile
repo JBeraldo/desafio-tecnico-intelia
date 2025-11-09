@@ -28,12 +28,18 @@ COPY docker/php/conf.d/realpath.ini /usr/local/etc/php/conf.d/realpath.ini
 # 🧰 Dev stage — mounts local code
 # =========================================
 FROM base AS dev
+# Set environment (overridden at runtime by Docker Compose)
+ENV APP_ENV=dev
+ENV APP_DEBUG=1
 
 # Install Composer (for local dev)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 
 FROM base AS prod
+# Set environment (overridden at runtime by Docker Compose)
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
 
 # Copy Composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -42,7 +48,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY ./backend .
 
 # Install production dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --no-progress \
  && php bin/console cache:clear --env=prod
 
 # Set proper permissions for cache/logs

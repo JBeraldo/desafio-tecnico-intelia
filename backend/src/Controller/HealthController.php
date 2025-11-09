@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HealthController extends AbstractController
 {
-    #[Route('/ping', name: 'app_ping')]
+    #[Route('/api/ping', name: 'app_ping')]
     public function index(): JsonResponse
     {
         return $this->json([
