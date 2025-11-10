@@ -1,16 +1,17 @@
 import { viewChild, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatStepper,
-MatStepperModule, StepperOrientation } from '@angular/material/stepper';
+import {
+  MatStepper,
+  MatStepperModule, StepperOrientation
+} from '@angular/material/stepper';
 import { Lead } from '../lead.model';
 import { LeadService } from '../lead.service';
 import { CommonModule } from '@angular/common';
 import { FormInput } from '../../../shared/components/form-input/form-input';
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
-import { first,
-map, Observable, Subject, take, takeUntil } from 'rxjs';
+import { map, Observable, Subject, take, takeUntil } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
@@ -27,20 +28,38 @@ export class LeadForm implements OnInit, OnDestroy {
   private stepper = viewChild.required(MatStepper);
 
   firstStepForm = this._formBuilder.group({
-    full_name: [null, [Validators.required,Validators.maxLength(255)]],
-    birth_date: [null, [Validators.required]],
-    email: [null, [Validators.required, Validators.email,Validators.maxLength(255)]]
+    full_name: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.maxLength(255)],
+    }),
+    birth_date: new FormControl<string | null>(null, {
+      validators: [Validators.required],
+    }),
+    email: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.email, Validators.maxLength(255)],
+    }),
   });
   secondStepForm = this._formBuilder.group({
-    street: [null, [Validators.required,Validators.maxLength(255)]],
-    street_number: [0, [Validators.required]],
-    postal_code: [null, [Validators.required,Validators.maxLength(8)]],
-    city: [null, [Validators.required,Validators.maxLength(255)]],
-    state: [null, [Validators.required, Validators.pattern('^[A-Z]{2}$'),Validators.maxLength(2)]]
+    street: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.maxLength(255)],
+    }),
+    street_number: new FormControl<number | null>(null, {
+      validators: [Validators.required],
+    }),
+    postal_code: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.maxLength(8)],
+    }),
+    city: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.maxLength(255)],
+    }),
+    state: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.pattern('^[A-Z]{2}$'), Validators.maxLength(2)],
+    }),
   });
   thirdStepForm = this._formBuilder.group({
-    landline: [null],
-    cellphone: [null, [Validators.required]]
+    landline: new FormControl<string | null>(null),
+    cellphone: new FormControl<string | null>(null, {
+      validators: [Validators.required],
+    }),
   });
 
   private leadForm: Array<FormGroup> = [this.firstStepForm, this.secondStepForm, this.thirdStepForm]
@@ -70,7 +89,7 @@ export class LeadForm implements OnInit, OnDestroy {
     this.unsub$.complete()
   }
 
-  submit(index:number) {
+  submit(index: number) {
     let hasChanged = this.leadForm.some((group) => group.dirty)
     if (hasChanged) {
       let leadFormData: Lead = {
@@ -86,17 +105,17 @@ export class LeadForm implements OnInit, OnDestroy {
     }
   }
 
-  markAsPristineForm(){
+  markAsPristineForm() {
     for (let step of this.leadForm) {
       step.markAsPristine()
     }
   }
 
-  private setStepperPosition(step:number){
-      setTimeout(() => {
-        for (let i = 0; i < step; i++) {
-          this.stepper().next();
-        }
-      }, 0);
+  private setStepperPosition(step: number) {
+    setTimeout(() => {
+      for (let i = 0; i < step; i++) {
+        this.stepper().next();
+      }
+    }, 0);
   }
 }
