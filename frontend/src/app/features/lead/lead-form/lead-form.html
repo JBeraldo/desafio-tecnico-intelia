@@ -5,7 +5,7 @@
     </mat-card-header>
 
     <mat-card-content>
-        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="submit($event.previouslySelectedIndex)" [linear]="true" #stepper>
+        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="submit()" [linear]="true" #stepper>
 
             <!-- STEP 1 -->
             <mat-step [stepControl]="firstStepForm">

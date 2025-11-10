@@ -18,15 +18,30 @@ class LeadRequest
     #[Assert\Email(groups: ['personal'])]
     #[Assert\Length(max: 255, groups: ['personal'])]
     public ?string $email = null;
-    #[Rule\Required(groups: ['address'])]
+    #[Assert\When(
+        expression: 'this.step === 1',
+        constraints: [new Rule\Required(groups: ['address'])]
+    )]
     public ?string $street = null;
-    #[Rule\Required(groups: ['address'])]
+    #[Assert\When(
+        expression: 'this.step === 1',
+        constraints: [new Rule\Required(groups: ['address'])]
+    )]
     public ?int $street_number = null;
-    #[Rule\Required(groups: ['address'])]
+    #[Assert\When(
+        expression: 'this.step === 1',
+        constraints: [new Rule\Required(groups: ['address'])]
+    )]
     public ?string $postal_code = null;
-    #[Rule\Required(groups: ['address'])]
+    #[Assert\When(
+        expression: 'this.step === 1',
+        constraints: [new Rule\Required(groups: ['address'])]
+    )]
     public ?string $state = null;
-    #[Rule\Required(groups: ['address'])]
+    #[Assert\When(
+        expression: 'this.step === 1',
+        constraints: [new Rule\Required(groups: ['address'])]
+    )]
     public ?string $city = null;
     public ?string $landline = null;
     #[Assert\When(

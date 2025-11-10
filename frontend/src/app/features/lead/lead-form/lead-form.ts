@@ -89,14 +89,15 @@ export class LeadForm implements OnInit, OnDestroy {
     this.unsub$.complete()
   }
 
-  submit(index: number) {
-    let hasChanged = this.leadForm.some((group) => group.dirty)
-    if (hasChanged) {
+  submit() {
+    let hasChanged = this.leadForm.map((group) => group.dirty)
+    let changeIndex = hasChanged.lastIndexOf(true)
+    if (changeIndex != -1) {
       let leadFormData: Lead = {
         ...this.firstStepForm.getRawValue(),
         ...this.secondStepForm.getRawValue(),
         ...this.thirdStepForm.getRawValue(),
-        step: index
+        step: changeIndex
       }
 
       this.leadService.updateUser(leadFormData).pipe(take(1)).subscribe()

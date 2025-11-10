@@ -6,7 +6,7 @@ class LeadDto
 {
     public ?string $uuid = null;
     public ?string $full_name = null;
-    public ?\DateTimeImmutable $birth_date = null;
+    public ?string $birth_date = null;
     public ?string $email = null;
     public ?string $street = null;
     public ?int $street_number = null;
