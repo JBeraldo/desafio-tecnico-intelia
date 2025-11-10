@@ -26,8 +26,8 @@ class Lead
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $street = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $street_number = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $street_number = null;
 
     #[ORM\Column(length: 8, nullable: true)]
     private ?string $postal_code = null;
@@ -100,12 +100,12 @@ class Lead
         return $this;
     }
 
-    public function getStreetNumber(): ?int
+    public function getStreetNumber(): ?string
     {
         return $this->street_number;
     }
 
-    public function setStreetNumber(int $street_number): static
+    public function setStreetNumber(string $street_number): static
     {
         $this->street_number = $street_number;
 

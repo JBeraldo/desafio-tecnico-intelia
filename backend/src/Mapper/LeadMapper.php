@@ -15,22 +15,22 @@ class LeadMapper
     public static function toEntity(LeadRequest $leadRequest, ?Lead $default = null): Lead
     {
         $lead = $default ? $default: new Lead();
-        $lead->setFullName($leadRequest->full_name ?? '');
-        $lead->setBirthDate($leadRequest->birth_date ?? null);
-        $lead->setEmail($leadRequest->email ?? null);
+        $lead->setFullName($leadRequest->full_name ?? $lead->getFullName());
+        $lead->setBirthDate($leadRequest->birth_date ?? $lead->getBirthDate());
+        $lead->setEmail($leadRequest->email ?? $lead->getEmail());
         if ($leadRequest->step >= 1)
         {
             $lead->setUuid(Uuid::fromString($leadRequest->uuid ));
-            $lead->setStreet($leadRequest->street ?? null);
-            $lead->setStreetNumber($leadRequest->street_number ?? null);
-            $lead->setPostalCode($leadRequest->postal_code ?? null);
-            $lead->setState($leadRequest->state ?? null);
-            $lead->setCity($leadRequest->city ?? null);
+            $lead->setStreet($leadRequest->street ?? $lead->getStreet());
+            $lead->setStreetNumber($leadRequest->street_number ?? $lead->getStreetNumber());
+            $lead->setPostalCode($leadRequest->postal_code ?? $lead->getPostalCode());
+            $lead->setState($leadRequest->state ?? $lead->getState());
+            $lead->setCity($leadRequest->city ?? $lead->getCity());
         }
         if($leadRequest->step == 2)
         {
-            $lead->setLandline($leadRequest->landline ?? null);
-            $lead->setCellphone($leadRequest->cellphone ?? null);
+            $lead->setLandline($leadRequest->landline ?? $lead->getLandline());
+            $lead->setCellphone($leadRequest->cellphone ?? $lead->getCellphone());
         } 
 
         return $lead;

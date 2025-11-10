@@ -42,7 +42,7 @@ export class LeadForm implements OnInit, OnDestroy {
     street: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(255)],
     }),
-    street_number: new FormControl<number | null>(null, {
+    street_number: new FormControl<string | null>(null, {
       validators: [Validators.required],
     }),
     postal_code: new FormControl<string | null>(null, {

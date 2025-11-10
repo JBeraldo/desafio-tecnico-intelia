@@ -4,7 +4,7 @@ export interface Lead {
     birth_date:string | null
     email:string | null
     street: string | null
-    street_number: number | null
+    street_number: string | null
     city: string | null
     postal_code: string | null
     state:string | null

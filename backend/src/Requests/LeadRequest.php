@@ -25,9 +25,9 @@ class LeadRequest
     public ?string $street = null;
     #[Assert\When(
         expression: 'this.step === 1',
-        constraints: [new Rule\Required(groups: ['address'])]
+        constraints: [new Rule\Required(groups: ['address']),new Assert\Length(max: 255, groups: ['personal'])]
     )]
-    public ?int $street_number = null;
+    public ?string $street_number = null;
     #[Assert\When(
         expression: 'this.step === 1',
         constraints: [new Rule\Required(groups: ['address'])]
