@@ -45,7 +45,7 @@ class LeadMapper
 
         $dto->uuid = $lead->getUuid()?->toString();
         $dto->full_name = $lead->getFullName();
-        $dto->birth_date = $lead->getBirthDate();
+        $dto->birth_date = $lead->getBirthDate()->format('Y-m-d');
         $dto->email = $lead->getEmail();
         $dto->street = $lead->getStreet();
         $dto->street_number = $lead->getStreetNumber();
