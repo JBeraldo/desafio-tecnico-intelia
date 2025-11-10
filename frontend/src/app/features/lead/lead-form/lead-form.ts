@@ -1,16 +1,17 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { viewChild, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatStepperModule, StepperOrientation } from '@angular/material/stepper';
+import { MatStepper,
+MatStepperModule, StepperOrientation } from '@angular/material/stepper';
 import { Lead } from '../lead.model';
 import { LeadService } from '../lead.service';
 import { CommonModule } from '@angular/common';
 import { FormInput } from '../../../shared/components/form-input/form-input';
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
+import { first,
+map, Observable, Subject, take, takeUntil } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 @Component({
   selector: 'app-lead-form',
@@ -23,6 +24,7 @@ export class LeadForm implements OnInit, OnDestroy {
   private breakpoint = inject(BreakpointObserver)
   private leadService = inject(LeadService);
   private lead$: Observable<Lead | null>
+  private stepper = viewChild.required(MatStepper);
 
   firstStepForm = this._formBuilder.group({
     full_name: [null, [Validators.required,Validators.maxLength(255)]],
@@ -58,6 +60,7 @@ export class LeadForm implements OnInit, OnDestroy {
       for (let group of this.leadForm) {
         group.patchValue({ ...lead })
       }
+      this.setStepperPosition(lead?.step ?? 0)
     })
     this.leadService.get()
   }
@@ -77,11 +80,23 @@ export class LeadForm implements OnInit, OnDestroy {
         step: index
       }
 
-      this.leadService.updateUser(leadFormData).subscribe(()=> console.log('a'));
+      this.leadService.updateUser(leadFormData).pipe(take(1)).subscribe()
 
-      for (let step of this.leadForm) {
-        step.markAsPristine()
-      }
+      this.markAsPristineForm()
     }
+  }
+
+  markAsPristineForm(){
+    for (let step of this.leadForm) {
+      step.markAsPristine()
+    }
+  }
+
+  private setStepperPosition(step:number){
+      setTimeout(() => {
+        for (let i = 0; i < step; i++) {
+          this.stepper().next();
+        }
+      }, 0);
   }
 }

@@ -54,6 +54,7 @@ class LeadMapper
         $dto->city = $lead->getCity();
         $dto->landline = $lead->getLandline();
         $dto->cellphone = $lead->getCellphone();
+        $dto->step = ($dto->cellphone ? 3 : $dto->street) ? 2 : 1;
 
         return $dto;
     }

@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Lead, LeadGetResponse, LeadStoreResponse } from './lead.model';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { throwError,
+BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 import { StorageService } from '../storage/storage.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../enviroments/enviroment';
@@ -25,7 +26,7 @@ export class LeadService {
         return this.http.put<Partial<Omit<LeadStoreResponse, 'uuid'>>>(`${this.url}/lead`,lead)
     }
 
-    updateUser(leadData:Lead): Observable<LeadStoreResponse> | Observable<Partial<Omit<LeadStoreResponse, 'uuid'>>>{
+    updateUser(leadData:Lead): Observable<Partial<Omit<LeadStoreResponse, 'uuid'>>>{
         let lead = {
             ...leadData,
             uuid: this.storage.getKey('uuid')
@@ -43,7 +44,12 @@ export class LeadService {
     get() {
         let uuid = this.storage.getKey('uuid')
         if(uuid){
-            this.http.get<LeadGetResponse>(`${this.url}/lead/${uuid}`).subscribe((response) => this.leadSubject.next(response.lead))
+            this.http.get<LeadGetResponse>(`${this.url}/lead/${uuid}`)
+            .pipe(catchError((err)=> {
+                this.storage.removeKey('uuid')
+                return throwError(()=>err)
+            }))
+            .subscribe((response) => this.leadSubject.next(response.lead))
         }
     }
 }
