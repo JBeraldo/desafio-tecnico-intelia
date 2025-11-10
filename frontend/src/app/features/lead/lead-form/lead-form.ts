@@ -11,7 +11,7 @@ import { LeadService } from '../lead.service';
 import { CommonModule } from '@angular/common';
 import { FormInput } from '../../../shared/components/form-input/form-input';
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
-import { map, Observable, Subject, take, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, take, takeUntil, tap, throwError } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
@@ -26,7 +26,8 @@ export class LeadForm implements OnInit, OnDestroy {
   private leadService = inject(LeadService);
   private lead$: Observable<Lead | null>
   private stepper = viewChild.required(MatStepper);
-
+  stepperOrientation: Observable<StepperOrientation>;
+  private readonly unsub$ = new Subject<void>();
   firstStepForm = this._formBuilder.group({
     full_name: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(255)],
@@ -63,8 +64,7 @@ export class LeadForm implements OnInit, OnDestroy {
   });
 
   private leadForm: Array<FormGroup> = [this.firstStepForm, this.secondStepForm, this.thirdStepForm]
-  private readonly unsub$ = new Subject<void>();
-  stepperOrientation: Observable<StepperOrientation>;
+
 
   constructor() {
     this.lead$ = this.leadService.lead$
@@ -75,13 +75,18 @@ export class LeadForm implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.lead$.pipe(takeUntil(this.unsub$)).subscribe((lead) => {
-      for (let group of this.leadForm) {
-        group.patchValue({ ...lead })
-      }
-      this.setStepperPosition(lead?.step ?? 0)
+    this.lead$.pipe(takeUntil(this.unsub$)).pipe(filter(Boolean)).subscribe((lead) => {
+      this.patchForms(lead)
+      this.setStepperPosition(lead.step ?? 0)
+      this.markAsPristineForm()
     })
-    this.leadService.get()
+    if (this.leadService.uuid) {
+      this.leadService.get().pipe(takeUntil(this.unsub$)).subscribe(() => this.watchPostalCode())
+    }
+    else {
+      this.watchPostalCode()
+    }
+
   }
 
   ngOnDestroy(): void {
@@ -91,16 +96,22 @@ export class LeadForm implements OnInit, OnDestroy {
 
   submit() {
     let hasChanged = this.leadForm.map((group) => group.dirty)
-    let changeIndex = hasChanged.lastIndexOf(true)
-    if (changeIndex != -1) {
+    let lastChangedForm = hasChanged.lastIndexOf(true)
+    if (lastChangedForm != -1) {
       let leadFormData: Lead = {
         ...this.firstStepForm.getRawValue(),
         ...this.secondStepForm.getRawValue(),
         ...this.thirdStepForm.getRawValue(),
-        step: changeIndex
+        step: lastChangedForm,
+        uuid: this.leadService.uuid
       }
 
-      this.leadService.updateUser(leadFormData).pipe(take(1)).subscribe()
+      if (leadFormData.uuid) {
+        this.leadService.update(leadFormData).pipe(take(1)).subscribe()
+      }
+      else {
+        this.leadService.store(leadFormData).pipe(take(1)).subscribe()
+      }
 
       this.markAsPristineForm()
     }
@@ -118,5 +129,38 @@ export class LeadForm implements OnInit, OnDestroy {
         this.stepper().next();
       }
     }, 0);
+  }
+
+  private patchForms(lead: Lead) {
+    for (let group of this.leadForm) {
+      group.patchValue({ ...lead })
+    }
+  }
+
+  watchPostalCode() {
+    this.secondStepForm.controls.postal_code.valueChanges.pipe(
+      takeUntil(this.unsub$),
+      debounceTime(500),
+      distinctUntilChanged(),
+      filter(cep => cep != null),
+      filter(cep => cep.length === 8),
+      exhaustMap(cep => this.leadService.searchCep(cep)),
+      switchMap((response) => {
+        if (response.erro) {
+          this.secondStepForm.controls.postal_code.setErrors({ custom: { message: 'CEP inválido' } })
+          return of(null)
+        }
+        return of(response)
+      }),
+      filter((response) => !!response)
+    ).subscribe((response) => {
+      this.secondStepForm.patchValue(
+        {
+          street: response.logradouro,
+          city: response.localidade,
+          state: response.uf
+        }
+      )
+    })
   }
 }

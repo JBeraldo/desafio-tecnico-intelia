@@ -39,6 +39,6 @@ final class LeadController extends AbstractController
     {
         $this->service->update($leadRequest);
 
-        return $this->json(["message" => 'Sucesso'],Response::HTTP_CREATED);
+        return $this->json(["message" => 'Sucesso'],Response::HTTP_OK);
     }
 }
