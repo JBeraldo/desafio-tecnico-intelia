@@ -6,7 +6,7 @@ import {
 } from 'rxjs'
 import { StorageService } from '../storage/storage.service'
 import { HttpClient } from '@angular/common/http'
-import { environment } from '../../../enviroments/enviroment'
+import { environment } from '../../../environments/environments'
 import { ViaCepResponse } from '../../shared/shared.types'
 
 @Injectable({ providedIn: 'root' })

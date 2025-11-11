@@ -30,6 +30,12 @@ services:
     image: mariadb:11.4
     container_name: mariadb
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u${DB_USERNAME} -p${DB_PASSWORD} >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_DATABASE: ${DB_DATABASE}
@@ -52,6 +58,12 @@ services:
       user: "1000:1000"
       restart: unless-stopped
       working_dir: /var/www/
+      healthcheck:
+        test: ["CMD-SHELL", "ss -ltn | grep -q ':9000' || exit 1"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 10s
       environment:
           PHP_OPCACHE_ENABLE: 1
           PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
