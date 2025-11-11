@@ -12,25 +12,25 @@ class LeadMapper
     /**
      * Maps a LeadRequest DTO to a Lead entity.
      */
-    public static function toEntity(LeadRequest $leadRequest, ?Lead $default = null): Lead
+    public static function toEntity(LeadRequest $source, ?Lead $target = null): Lead
     {
-        $lead = $default ? $default: new Lead();
-        $lead->setFullName($leadRequest->full_name ?? $lead->getFullName());
-        $lead->setBirthDate($leadRequest->birth_date ?? $lead->getBirthDate());
-        $lead->setEmail($leadRequest->email ?? $lead->getEmail());
-        if ($leadRequest->step >= 1)
+        $lead = $target ? $target: new Lead();
+        $lead->setFullName($source->full_name ?? $lead->getFullName());
+        $lead->setBirthDate($source->birth_date ?? $lead->getBirthDate());
+        $lead->setEmail($source->email ?? $lead->getEmail());
+        if ($source->step >= 1)
         {
-            $lead->setUuid(Uuid::fromString($leadRequest->uuid ));
-            $lead->setStreet($leadRequest->street ?? $lead->getStreet());
-            $lead->setStreetNumber($leadRequest->street_number ?? $lead->getStreetNumber());
-            $lead->setPostalCode($leadRequest->postal_code ?? $lead->getPostalCode());
-            $lead->setState($leadRequest->state ?? $lead->getState());
-            $lead->setCity($leadRequest->city ?? $lead->getCity());
+            $lead->setUuid(Uuid::fromString($source->uuid ));
+            $lead->setStreet($source->street ?? $lead->getStreet());
+            $lead->setStreetNumber($source->street_number ?? $lead->getStreetNumber());
+            $lead->setPostalCode($source->postal_code ?? $lead->getPostalCode());
+            $lead->setState($source->state ?? $lead->getState());
+            $lead->setCity($source->city ?? $lead->getCity());
         }
-        if($leadRequest->step == 2)
+        if($source->step == 2)
         {
-            $lead->setLandline($leadRequest->landline ?? $lead->getLandline());
-            $lead->setCellphone($leadRequest->cellphone ?? $lead->getCellphone());
+            $lead->setLandline($source->landline ?? $lead->getLandline());
+            $lead->setCellphone($source->cellphone ?? $lead->getCellphone());
         } 
 
         return $lead;
