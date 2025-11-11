@@ -27,7 +27,7 @@ export class LeadForm implements OnInit, OnDestroy {
   private leadService = inject(LeadService)
   private lead$: Observable<Lead | null>
   private stepper = viewChild.required(MatStepper)
-  stepperOrientation: Observable<StepperOrientation>
+  stepperOrientation$: Observable<StepperOrientation>
   private readonly unsub$ = new Subject<void>()
   personalForm = this._formBuilder.group({
     full_name: new FormControl<string | null>(null, {
@@ -64,12 +64,12 @@ export class LeadForm implements OnInit, OnDestroy {
     }),
   })
 
-  private leadForm: FormGroup[] = [this.personalForm, this.addressForm, this.contactForm]
+  private readonly leadForm: FormGroup[] = [this.personalForm, this.addressForm, this.contactForm]
 
 
   constructor() {
     this.lead$ = this.leadService.lead$
-    this.stepperOrientation = this.breakpoint
+    this.stepperOrientation$ = this.breakpoint
       .observe('(min-width: 800px)')
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')))
   }
@@ -113,14 +113,9 @@ export class LeadForm implements OnInit, OnDestroy {
       uuid: this.leadService.uuid
     }
 
-    let response$
-
-    if (leadFormData.uuid) {
-      response$ = this.leadService.update(leadFormData)
-    }
-    else {
-      response$ = this.leadService.store(leadFormData)
-    }
+    const response$ = leadFormData.uuid
+      ? this.leadService.update(leadFormData)
+      : this.leadService.store(leadFormData);
 
     response$.pipe(
       takeUntil(this.unsub$),
@@ -130,8 +125,9 @@ export class LeadForm implements OnInit, OnDestroy {
         }
         return of(null)
       }),
-    filter(Boolean)).subscribe(() => {
-      this.stepper().steps.forEach((step) => step.hasError = false)
+      filter(Boolean)
+      )
+    .subscribe(() => { this.stepper().steps.forEach((step) => step.hasError = false)
     }
     )
 
