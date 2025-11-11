@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install mbstring exif pcntl bcmath sockets opcache pdo pdo_mysql
+RUN docker-php-ext-install mbstring exif pcntl bcmath sockets opcache pdo pdo_mysql intl
 
 # Copy PHP config files
 COPY docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini

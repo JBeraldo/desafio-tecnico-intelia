@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Lead } from '../lead/lead.model';
+import { Injectable } from '@angular/core'
+import { Lead } from '../lead/lead.model'
 
 @Injectable({ providedIn: 'root' })
 export class StorageService {
@@ -9,7 +9,7 @@ export class StorageService {
     }
 
     getLead():Lead | null {
-        let leadObject = localStorage.getItem('lead_data')
+        const leadObject = localStorage.getItem('lead_data')
         if (leadObject) {
             return JSON.parse(leadObject) as Lead
         }

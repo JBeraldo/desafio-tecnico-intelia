@@ -1,18 +1,19 @@
-import { viewChild, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { FormBuilder, FormControl, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
+import { viewChild, Component, inject, OnDestroy, OnInit } from '@angular/core'
+import { MatButtonModule } from '@angular/material/button'
+import { FormBuilder, FormControl, Validators, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms'
+import { MatCardModule } from '@angular/material/card'
 import {
   MatStepper,
   MatStepperModule, StepperOrientation
-} from '@angular/material/stepper';
-import { Lead } from '../lead.model';
-import { LeadService } from '../lead.service';
-import { CommonModule } from '@angular/common';
-import { FormInput } from '../../../shared/components/form-input/form-input';
-import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
-import { debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, take, takeUntil, tap, throwError } from 'rxjs';
-import { BreakpointObserver } from '@angular/cdk/layout';
+} from '@angular/material/stepper'
+import { Lead } from '../lead.model'
+import { LeadService } from '../lead.service'
+import { CommonModule } from '@angular/common'
+import { FormInput } from '../../../shared/components/form-input/form-input'
+import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input'
+import { catchError, debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, takeUntil} from 'rxjs'
+import { BreakpointObserver } from '@angular/cdk/layout'
+import { ValidationErrorResponse, Violation } from '../../../shared/shared.types'
 
 @Component({
   selector: 'app-lead-form',
@@ -21,14 +22,14 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   styleUrl: './lead-form.scss',
 })
 export class LeadForm implements OnInit, OnDestroy {
-  private _formBuilder = inject(FormBuilder);
+  private _formBuilder = inject(FormBuilder)
   private breakpoint = inject(BreakpointObserver)
-  private leadService = inject(LeadService);
+  private leadService = inject(LeadService)
   private lead$: Observable<Lead | null>
-  private stepper = viewChild.required(MatStepper);
-  stepperOrientation: Observable<StepperOrientation>;
-  private readonly unsub$ = new Subject<void>();
-  firstStepForm = this._formBuilder.group({
+  private stepper = viewChild.required(MatStepper)
+  stepperOrientation: Observable<StepperOrientation>
+  private readonly unsub$ = new Subject<void>()
+  personalForm = this._formBuilder.group({
     full_name: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(255)],
     }),
@@ -38,8 +39,8 @@ export class LeadForm implements OnInit, OnDestroy {
     email: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.email, Validators.maxLength(255)],
     }),
-  });
-  secondStepForm = this._formBuilder.group({
+  })
+  addressForm = this._formBuilder.group({
     street: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(255)],
     }),
@@ -55,33 +56,35 @@ export class LeadForm implements OnInit, OnDestroy {
     state: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.pattern('^[A-Z]{2}$'), Validators.maxLength(2)],
     }),
-  });
-  thirdStepForm = this._formBuilder.group({
+  })
+  contactForm = this._formBuilder.group({
     landline: new FormControl<string | null>(null),
     cellphone: new FormControl<string | null>(null, {
       validators: [Validators.required],
     }),
-  });
+  })
 
-  private leadForm: Array<FormGroup> = [this.firstStepForm, this.secondStepForm, this.thirdStepForm]
+  private leadForm: FormGroup[] = [this.personalForm, this.addressForm, this.contactForm]
 
 
   constructor() {
     this.lead$ = this.leadService.lead$
     this.stepperOrientation = this.breakpoint
       .observe('(min-width: 800px)')
-      .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
+      .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')))
   }
 
 
   ngOnInit(): void {
-    this.lead$.pipe(takeUntil(this.unsub$)).pipe(filter(Boolean)).subscribe((lead) => {
+    this.lead$.pipe(takeUntil(this.unsub$), filter(Boolean)).subscribe((lead) => {
       this.patchForms(lead)
-      this.setStepperPosition(lead.step ?? 0)
       this.markAsPristineForm()
     })
     if (this.leadService.uuid) {
-      this.leadService.get().pipe(takeUntil(this.unsub$)).subscribe(() => this.watchPostalCode())
+      this.leadService.get().pipe(takeUntil(this.unsub$)).subscribe((response) => {
+        this.watchPostalCode()
+        this.setStepperPosition(response.lead.step ?? 0)
+      })
     }
     else {
       this.watchPostalCode()
@@ -94,31 +97,49 @@ export class LeadForm implements OnInit, OnDestroy {
     this.unsub$.complete()
   }
 
-  submit() {
-    let hasChanged = this.leadForm.map((group) => group.dirty)
-    let lastChangedForm = hasChanged.lastIndexOf(true)
+  next() {
+    const lastChangedForm = [...this.leadForm].reverse().findIndex(g => g.dirty)
     if (lastChangedForm != -1) {
-      let leadFormData: Lead = {
-        ...this.firstStepForm.getRawValue(),
-        ...this.secondStepForm.getRawValue(),
-        ...this.thirdStepForm.getRawValue(),
-        step: lastChangedForm,
-        uuid: this.leadService.uuid
-      }
-
-      if (leadFormData.uuid) {
-        this.leadService.update(leadFormData).pipe(take(1)).subscribe()
-      }
-      else {
-        this.leadService.store(leadFormData).pipe(take(1)).subscribe()
-      }
-
-      this.markAsPristineForm()
+      this.submit(lastChangedForm)
     }
   }
 
-  markAsPristineForm() {
-    for (let step of this.leadForm) {
+  private submit(lastChangedForm: number) {
+    const leadFormData: Lead = {
+      ...this.personalForm.getRawValue(),
+      ...this.addressForm.getRawValue(),
+      ...this.contactForm.getRawValue(),
+      step: lastChangedForm,
+      uuid: this.leadService.uuid
+    }
+
+    let response$
+
+    if (leadFormData.uuid) {
+      response$ = this.leadService.update(leadFormData)
+    }
+    else {
+      response$ = this.leadService.store(leadFormData)
+    }
+
+    response$.pipe(
+      takeUntil(this.unsub$),
+      catchError((err: { error: ValidationErrorResponse }) => {
+        for (const [index, violation] of Object.entries(err.error.violations)) {
+          this.displayError(violation)
+        }
+        return of(null)
+      }),
+    filter(Boolean)).subscribe(() => {
+      this.stepper().steps.forEach((step) => step.hasError = false)
+    }
+    )
+
+    this.markAsPristineForm()
+  }
+
+  private markAsPristineForm() {
+    for (const step of this.leadForm) {
       step.markAsPristine()
     }
   }
@@ -126,19 +147,19 @@ export class LeadForm implements OnInit, OnDestroy {
   private setStepperPosition(step: number) {
     setTimeout(() => {
       for (let i = 0; i < step; i++) {
-        this.stepper().next();
+        this.stepper().next()
       }
-    }, 0);
+    }, 0)
   }
 
   private patchForms(lead: Lead) {
-    for (let group of this.leadForm) {
+    for (const group of this.leadForm) {
       group.patchValue({ ...lead })
     }
   }
 
-  watchPostalCode() {
-    this.secondStepForm.controls.postal_code.valueChanges.pipe(
+  private watchPostalCode() {
+    this.addressForm.controls.postal_code.valueChanges.pipe(
       takeUntil(this.unsub$),
       debounceTime(500),
       distinctUntilChanged(),
@@ -147,14 +168,14 @@ export class LeadForm implements OnInit, OnDestroy {
       exhaustMap(cep => this.leadService.searchCep(cep)),
       switchMap((response) => {
         if (response.erro) {
-          this.secondStepForm.controls.postal_code.setErrors({ custom: { message: 'CEP inválido' } })
+          this.addressForm.controls.postal_code.setErrors({ custom: { message: 'CEP inválido' } })
           return of(null)
         }
         return of(response)
       }),
       filter((response) => !!response)
     ).subscribe((response) => {
-      this.secondStepForm.patchValue(
+      this.addressForm.patchValue(
         {
           street: response.logradouro,
           city: response.localidade,
@@ -162,5 +183,22 @@ export class LeadForm implements OnInit, OnDestroy {
         }
       )
     })
+  }
+
+  private displayError(violation: Violation) {
+    this.leadForm.forEach((form, index) => {
+      const control = form.get(violation.propertyPath)
+      if (control) {
+        control.setErrors({ custom: { message: violation.title } })
+        this.setStepError(index, true)
+      }
+    })
+  }
+
+  private setStepError(index: number, value: boolean) {
+    const step = this.stepper().steps.get(index)
+    if (step) {
+      step.hasError = value
+    }
   }
 }

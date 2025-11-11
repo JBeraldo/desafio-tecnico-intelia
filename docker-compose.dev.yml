@@ -49,6 +49,7 @@ services:
           target: dev
           dockerfile: ./backend/Dockerfile
       image: php83-fpm
+      user: "1000:1000"
       restart: unless-stopped
       working_dir: /var/www/
       environment:

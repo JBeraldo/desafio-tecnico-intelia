@@ -5,23 +5,23 @@
     </mat-card-header>
 
     <mat-card-content>
-        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="submit()" [linear]="true" #stepper>
+        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="next()" [linear]="true" #stepper>
 
             <!-- STEP 1 -->
-            <mat-step [stepControl]="firstStepForm">
-                <form [formGroup]="firstStepForm" class="grid grid-cols-1  gap-4">
+            <mat-step [stepControl]="personalForm">
+                <form [formGroup]="personalForm" class="grid grid-cols-1  gap-4">
                     <ng-template matStepLabel>Dados básicos</ng-template>
 
                     <app-input label="Nome Completo" placeholder="José Silveira"
-                        [control]="firstStepForm.controls.full_name" >
+                        [control]="personalForm.controls.full_name" >
                     </app-input>
 
                     <app-input label="Email" placeholder="jose.silveira@intelia.com.br"
-                        [control]="firstStepForm.controls.email" type="email" >
+                        [control]="personalForm.controls.email" type="email" >
                     </app-input>
 
                     <app-date-input label="Data de Nascimento" placeholder="DD/MM/YYYY"
-                        [control]="firstStepForm.controls.birth_date" >
+                        [control]="personalForm.controls.birth_date" >
                     </app-date-input>
 
                     <div>
@@ -31,26 +31,26 @@
             </mat-step>
 
             <!-- STEP 2 -->
-            <mat-step [stepControl]="secondStepForm">
-                <form [formGroup]="secondStepForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <mat-step [stepControl]="addressForm">
+                <form [formGroup]="addressForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <ng-template matStepLabel>Dados de endereço</ng-template>
 
-                    <app-input label="Logradouro" placeholder="Abílio Carvalho Bastos"
-                        [control]="secondStepForm.controls.street" >
+                    <app-input  label="CEP" placeholder="84503-407" mask="00000-000"
+                        [control]="addressForm.controls.postal_code" >
                     </app-input>
 
                     <app-input label="Número" placeholder="1197" type="number" mask="0*"
-                        [control]="secondStepForm.controls.street_number">
+                        [control]="addressForm.controls.street_number">
                     </app-input>
 
-                    <app-input label="UF" placeholder="PR" mask="SS" [control]="secondStepForm.controls.state" >
+                    <app-input label="UF" placeholder="PR" mask="SS" [control]="addressForm.controls.state" >
                     </app-input>
 
-                    <app-input label="Cidade" placeholder="Irati" [control]="secondStepForm.controls.city" >
+                    <app-input label="Cidade" placeholder="Irati" [control]="addressForm.controls.city" >
                     </app-input>
 
-                    <app-input class="md:col-span-2" label="CEP" placeholder="84503-407" mask="00000-000"
-                        [control]="secondStepForm.controls.postal_code" >
+                    <app-input label="Logradouro" class="md:col-span-2" placeholder="Abílio Carvalho Bastos"
+                        [control]="addressForm.controls.street" >
                     </app-input>
 
                     <div>
@@ -61,16 +61,16 @@
             </mat-step>
 
             <!-- STEP 3 -->
-            <mat-step [stepControl]="thirdStepForm">
-                <form [formGroup]="thirdStepForm" class="grid col-2 row-2 gap-4">
+            <mat-step [stepControl]="contactForm">
+                <form [formGroup]="contactForm" class="grid col-2 row-2 gap-4">
                     <ng-template matStepLabel>Dados de Contato</ng-template>
 
                     <app-input label="Telefone Celular" placeholder="(00) 00000-0000" mask="(00) 00000-0000"
-                        [control]="thirdStepForm.controls.cellphone" >
+                        [control]="contactForm.controls.cellphone" >
                     </app-input>
 
                     <app-input label="Telefone Fixo" placeholder="(00) 0000-0000" mask="(00) 0000-0000"
-                        [control]="thirdStepForm.controls.landline" [required]="false">
+                        [control]="contactForm.controls.landline" [required]="false">
                     </app-input>
 
                     <div>

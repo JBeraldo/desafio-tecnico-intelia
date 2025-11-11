@@ -1,13 +1,13 @@
-import { inject, Injectable } from '@angular/core';
-import { Lead, LeadGetResponse, LeadStoreResponse } from './lead.model';
+import { inject, Injectable } from '@angular/core'
+import { Lead, LeadGetResponse, LeadStoreResponse } from './lead.model'
 import {
     throwError,
-    BehaviorSubject, catchError, Observable, of, tap
-} from 'rxjs';
-import { StorageService } from '../storage/storage.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../enviroments/enviroment';
-import { ViaCepResponse } from '../../shared/shared.types';
+    BehaviorSubject, catchError, Observable, tap
+} from 'rxjs'
+import { StorageService } from '../storage/storage.service'
+import { HttpClient } from '@angular/common/http'
+import { environment } from '../../../enviroments/enviroment'
+import { ViaCepResponse } from '../../shared/shared.types'
 
 @Injectable({ providedIn: 'root' })
 export class LeadService {
