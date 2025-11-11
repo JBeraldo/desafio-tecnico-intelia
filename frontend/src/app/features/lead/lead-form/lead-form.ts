@@ -45,7 +45,7 @@ export class LeadForm implements OnInit, OnDestroy {
       validators: [Validators.required, Validators.maxLength(255)],
     }),
     street_number: new FormControl<string | null>(null, {
-      validators: [Validators.required,Validators.pattern('/^[0-9]+$/')],
+      validators: [Validators.required],
     }),
     postal_code: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(8)],
@@ -106,6 +106,7 @@ export class LeadForm implements OnInit, OnDestroy {
   }
 
   private submit(lastChangedForm: number) {
+    console.log(1)
     const leadFormData: Lead = {
       ...this.personalForm.getRawValue(),
       ...this.addressForm.getRawValue(),

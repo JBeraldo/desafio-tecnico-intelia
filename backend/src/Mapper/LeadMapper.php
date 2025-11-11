@@ -16,10 +16,13 @@ class LeadMapper
     public static function toEntity(LeadRequest $source, ?Lead $target = null): Lead
     {
         $lead = $target ? $target: new Lead();
+        if($source->uuid)
+        {
+            $lead->setUuid(Uuid::fromString($source->uuid));
+        }
         $lead->setFullName($source->full_name ?? $lead->getFullName());
         $lead->setBirthDate(new DateTimeImmutable($source->birth_date) ?? $lead->getBirthDate());
         $lead->setEmail($source->email ?? $lead->getEmail());
-        $lead->setUuid(Uuid::fromString($source->uuid ));
         if ($source->step >= 1)
         {
             $lead->setStreet($source->street ?? $lead->getStreet());

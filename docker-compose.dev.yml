@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: ./frontend/Dockerfile.dev
     container_name: angular_dev
+    user: "1000:1000"
     ports: !override
       - "4200:4200"
     volumes:
@@ -27,7 +28,7 @@ services:
     networks:
         - api-network
   db:
-    image: mariadb:11.4
+    image: mariadb:11.4.8
     container_name: mariadb
     restart: unless-stopped
     healthcheck:
@@ -48,8 +49,8 @@ services:
     networks:
       - api-network
 
-  backend:
-      container_name: php
+  backend: &backend_service
+      container_name: symfony_api
       build:
           context: ./
           target: dev
@@ -79,3 +80,8 @@ services:
       depends_on:
         - proxy
         - db
+  migrations:
+      <<: *backend_service
+      container_name: symfony_migrations
+      command: [ "php", "bin/console", "doctrine:migrations:migrate", "--no-interaction" ]
+      restart: on-failure
