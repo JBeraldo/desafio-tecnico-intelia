@@ -15,7 +15,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
-  web-server:
+  proxy:
     container_name: nginx
     image: nginx:1.24
     restart: unless-stopped
@@ -26,6 +26,22 @@ services:
         - ./docker/nginx/application.dev.conf:/etc/nginx/conf.d/default.conf
     networks:
         - api-network
+  db:
+    image: mariadb:11.4
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - database_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - api-network
+
   backend:
       container_name: php
       build:
@@ -45,6 +61,8 @@ services:
           PHP_OPCACHE_JIT: "tracing"
       volumes:
           - ./backend:/var/www
-          - ./docker/php/conf.d/fpm.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       networks:
           - api-network
+      depends_on:
+        - proxy
+        - db

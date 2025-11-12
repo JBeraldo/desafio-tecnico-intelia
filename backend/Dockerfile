@@ -17,11 +17,12 @@ RUN apt-get update && apt-get install -y \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install mbstring exif pcntl bcmath sockets opcache pdo pdo_pgsql
+RUN docker-php-ext-install mbstring exif pcntl bcmath sockets opcache pdo pdo_mysql
 
 # Copy PHP config files
 COPY docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY docker/php/conf.d/realpath.ini /usr/local/etc/php/conf.d/realpath.ini
+COPY docker/php/conf.d/fpm.conf  /usr/local/etc/php-fpm.d/zz-docker.conf
 
 
 # =========================================
@@ -50,6 +51,9 @@ COPY ./backend .
 # Install production dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --no-progress \
  && php bin/console cache:clear --env=prod
+
+RUN php bin/console cache:clear --env=prod --no-debug
+RUN php bin/console cache:warmup --env=prod
 
 # Set proper permissions for cache/logs
 RUN chown -R www-data:www-data var
