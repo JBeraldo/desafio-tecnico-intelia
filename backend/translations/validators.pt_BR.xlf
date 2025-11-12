@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="pt-BR" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="lead.name.no_digits">
+                <source>lead.name.no_digits</source>
+                <target>Seu nome conter números</target>
+            </trans-unit>
+            <trans-unit id="lead.regex.numbers">
+                <source>lead.regex.numbers</source>
+                <target>Este campo só permite números</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
