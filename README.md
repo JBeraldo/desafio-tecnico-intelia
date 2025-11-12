@@ -227,10 +227,10 @@ php bin/console cache:clear
 | `birth_date` | DATETIME | Data de nascimento |
 | `email` | VARCHAR(255) | Email do lead |
 | `street` | VARCHAR(255) | Nome da rua/avenida |
-| `street_number` | VARCHAR(255) | Número do endereço |
+| `street_number` | VARCHAR(10) | Número do endereço |
 | `postal_code` | VARCHAR(8) | CEP |
 | `city` | VARCHAR(255) | Cidade |
-| `state` | VARCHAR(255) | UF |
+| `state` | VARCHAR(2) | UF |
 | `cellphone` | VARCHAR(11) | Celular |
 | `landline` | VARCHAR(10) | Telefone fixo |
 | `created_at` | DATETIME | Data de criação |
