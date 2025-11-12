@@ -1,3 +1,5 @@
+import { FormControl } from "@angular/forms"
+
 export interface Lead {
     uuid?: string | null
     full_name:string | null
@@ -24,4 +26,22 @@ export interface LeadStoreResponse{
 export interface LeadGetResponse{
     message:string
     lead: Lead
+}
+export interface PersonalFormGroup {
+  full_name: FormControl<string | null>;
+  birth_date: FormControl<string | null>;
+  email: FormControl<string | null>;
+}
+
+export interface AddressFormGroup {
+  street: FormControl<string | null>;
+  street_number: FormControl<string | null>;
+  postal_code: FormControl<string | null>;
+  city: FormControl<string | null>;
+  state: FormControl<string | null>;
+}
+
+export interface ContactFormGroup {
+  landline: FormControl<string | null>;
+  cellphone: FormControl<string | null>;
 }

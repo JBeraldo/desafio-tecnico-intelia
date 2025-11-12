@@ -49,4 +49,9 @@ export class LeadService {
     searchCep(cep: string): Observable<ViaCepResponse> {
         return this.http.get<ViaCepResponse>(`https://viacep.com.br/ws/${cep}/json/`)
     }
+
+    discartLead(){
+        this.storage.removeKey('uuid')
+        this.leadSubject.next(null)
+    }
 }
