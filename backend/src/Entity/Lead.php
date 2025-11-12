@@ -27,13 +27,13 @@ class Lead
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $street = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 10, nullable: true)]
     private ?string $street_number = null;
 
     #[ORM\Column(length: 8, nullable: true)]
     private ?string $postal_code = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 2, nullable: true)]
     private ?string $state = null;
 
     #[ORM\Column(length: 10, nullable: true)]
