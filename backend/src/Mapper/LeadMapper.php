@@ -2,7 +2,7 @@
 
 namespace App\Mapper;
 
-use App\Dto\LeadDto;
+use App\Resource\LeadResource;
 use App\Entity\Lead;
 use App\Request\LeadRequest;
 use DateTimeImmutable;
@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 class LeadMapper
 {
     /**
-     * Maps a LeadRequest DTO to a Lead entity.
+     * Maps a LeadRequest Resource to a Lead entity.
      */
     public static function toEntity(LeadRequest $source, ?Lead $target = null): Lead
     {
@@ -40,33 +40,33 @@ class LeadMapper
     }
 
     /**
-     * Maps a Lead entity to a LeadDto.
+     * Maps a Lead entity to a LeadResource.
      */
-    public static function fromEntity(Lead $lead): LeadDto
+    public static function fromEntity(Lead $lead): LeadResource
     {
-        $dto = new LeadDto();
+        $resource = new LeadResource();
 
-        $dto->uuid = $lead->getUuid()?->toString();
-        $dto->full_name = $lead->getFullName();
-        $dto->birth_date = $lead->getBirthDate()->format('Y-m-d');
-        $dto->email = $lead->getEmail();
-        $dto->street = $lead->getStreet();
-        $dto->street_number = $lead->getStreetNumber();
-        $dto->postal_code = $lead->getPostalCode();
-        $dto->state = $lead->getState();
-        $dto->city = $lead->getCity();
-        $dto->landline = $lead->getLandline();
-        $dto->cellphone = $lead->getCellphone();
-        $dto->step = self::checkStep($dto);
-        return $dto;
+        $resource->uuid = $lead->getUuid()?->toString();
+        $resource->full_name = $lead->getFullName();
+        $resource->birth_date = $lead->getBirthDate()->format('Y-m-d');
+        $resource->email = $lead->getEmail();
+        $resource->street = $lead->getStreet();
+        $resource->street_number = $lead->getStreetNumber();
+        $resource->postal_code = $lead->getPostalCode();
+        $resource->state = $lead->getState();
+        $resource->city = $lead->getCity();
+        $resource->landline = $lead->getLandline();
+        $resource->cellphone = $lead->getCellphone();
+        $resource->step = self::checkStep($resource);
+        return $resource;
     }
 
-    private static function checkStep(LeadDto $dto){
+    private static function checkStep(LeadResource $resource){
         $steps = 
         [
-            "1" => !empty($dto->uuid),
-            "2" => !empty($dto->street),
-            "3" => !empty($dto->cellphone),
+            "1" => !empty($resource->uuid),
+            "2" => !empty($resource->street),
+            "3" => !empty($resource->cellphone),
         ];
 
         $completed_steps = array_filter($steps, fn ($item) => !!$item);

@@ -6,7 +6,6 @@ use App\Entity\Lead;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 use Symfony\Component\Uid\Uuid;
 
 /**

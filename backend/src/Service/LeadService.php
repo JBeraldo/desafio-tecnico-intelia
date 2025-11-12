@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Dto\LeadDto;
+use App\Resource\LeadResource;
 use App\Mapper\LeadMapper;
 use App\Repository\LeadRepository;
 use App\Request\LeadRequest;
@@ -24,7 +24,7 @@ class LeadService {
         $this->repository->update($lead);
     }
 
-    function find(string $uuid): LeadDto | null {
+    function find(string $uuid): LeadResource | null {
         $lead = $this->repository->findOneByUuid($uuid);
         if ($lead === null) {
             return null;

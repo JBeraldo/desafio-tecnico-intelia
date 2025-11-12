@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Dto;
+namespace App\Resource;
 
-class LeadDto
+class LeadResource
 {
     public ?string $uuid = null;
     public ?string $full_name = null;

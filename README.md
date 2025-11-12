@@ -98,7 +98,7 @@ Depois de executar `make dev`, acesse:
 │   │   ├── Service/              # Lógica de negócio
 │   │   ├── Entity/               # Entidades Doctrine
 │   │   ├── Repository/           # Acesso ao banco
-│   │   └── Mapper/               # DTOs e conversão
+│   │   └── Mapper/               # Resources e conversão
 │   ├── migrations/               # Migrations Doctrine
 │   ├── config/                   # Configuração Symfony
 │   └── composer.json
