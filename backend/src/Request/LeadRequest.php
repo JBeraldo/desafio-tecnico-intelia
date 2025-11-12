@@ -8,12 +8,20 @@ use App\Validator\Constraints as Rule;
 class LeadRequest
 {
     #[Rule\Required(groups: ['address','contact'])]
+    #[Assert\Uuid(groups: ['address','contact'])]
     public ?string $uuid = null;
+    #[Assert\Regex(
+        pattern: '/\d/',
+        match: false,
+        groups: ['personal'],
+        message: 'lead.name.no_digits',
+    )]
     #[Rule\Required(groups: ['personal'])]
     #[Assert\Length(max: 255, groups: ['personal'])]
     public ?string $full_name = null;
     #[Rule\Required(groups: ['personal'])]
-    public ?\DateTimeImmutable $birth_date = null;
+    #[Assert\DateTime(format:'Y-m-d',groups: ['personal'])]
+    public ?string $birth_date = null;
     #[Rule\Required(groups: ['personal'])]
     #[Assert\Email(groups: ['personal'])]
     #[Assert\Length(max: 255, groups: ['personal'])]
@@ -25,7 +33,11 @@ class LeadRequest
     public ?string $street = null;
     #[Assert\When(
         expression: 'this.step === 1',
-        constraints: [new Rule\Required(groups: ['address']),new Assert\Length(max: 255, groups: ['personal'])]
+        constraints: [
+            new Rule\Required(groups: ['address']),
+            new Assert\Length(max: 255, groups: ['personal']),
+            new Assert\Regex(pattern: '/^[0-9]+$/',match: false,groups: ['personal'], message: 'lead.regex.number')
+        ]
     )]
     public ?string $street_number = null;
     #[Assert\When(
@@ -35,12 +47,19 @@ class LeadRequest
     public ?string $postal_code = null;
     #[Assert\When(
         expression: 'this.step === 1',
-        constraints: [new Rule\Required(groups: ['address'])]
+        constraints: [
+            new Rule\Required(groups: ['address']),
+            new Assert\Length(max: 8, groups: ['address']),
+            new Assert\Regex(pattern: '/^[0-9]+$/',match: false,groups: ['personal'], message: 'lead.regex.number')
+        ]
     )]
     public ?string $state = null;
     #[Assert\When(
         expression: 'this.step === 1',
-        constraints: [new Rule\Required(groups: ['address'])]
+        constraints: [
+            new Rule\Required(groups: ['address']),
+            new Assert\Length(max: 2, groups: ['address'])
+        ]
     )]
     public ?string $city = null;
     public ?string $landline = null;
