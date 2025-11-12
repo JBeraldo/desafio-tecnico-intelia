@@ -5,6 +5,3 @@ prod:
 	docker compose --env-file=./backend/.env.local up --build
 stop:
 	docker compose down
-ref:
-	docker compose down
-	docker compose up --build -d
