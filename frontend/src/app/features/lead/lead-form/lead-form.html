@@ -88,8 +88,9 @@
                     <p class="font-medium font-xl">Parabéns, você acaba de se inscrever para um evento da Intelia</p>
                 </div>
 
-                <div>
+                <div class="flex justify-between">
                     <button matButton matStepperPrevious>Voltar</button>
+                    <button matButton (click)="resetForm()">Inscrever-se Novamente</button>
                 </div>
             </mat-step>
 

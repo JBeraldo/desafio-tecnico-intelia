@@ -6,7 +6,7 @@ export class NotificationService {
   private snackBar = inject(MatSnackBar);
 
   success(message: string) {
-    this.snackBar.open(message, 'Fechar', { duration: 3000, panelClass: ['snackbar-success'] });
+    this.snackBar.open(message, 'Fechar', { duration: 90000000000, panelClass: ['snackbar-success'] });
   }
 
   error(message: string) {

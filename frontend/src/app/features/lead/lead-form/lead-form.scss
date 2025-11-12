@@ -1,8 +1,8 @@
 mat-icon[fontIcon=task_alt] {
     color: var(--mat-sys-primary) !important;
-    font-size: 12.5rem !important;
-    height: 12.5rem !important;
-    width: 12.5rem !important
+    font-size: clamp(8rem,10rem,12.5rem) !important; 
+    height: clamp(8rem,10rem,12.5rem) !important;
+    width: clamp(8rem,10rem,12.5rem) !important
 }
 
 form {

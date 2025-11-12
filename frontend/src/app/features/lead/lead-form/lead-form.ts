@@ -11,10 +11,12 @@ import { LeadService } from '../lead.service'
 import { CommonModule } from '@angular/common'
 import { FormInput } from '../../../shared/components/form-input/form-input'
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input'
-import { catchError, debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, takeUntil } from 'rxjs'
+import { catchError, debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, takeUntil} from 'rxjs'
 import { BreakpointObserver } from '@angular/cdk/layout'
 import { HttpError, ValidationErrorResponse, Violation } from '../../../shared/shared.types'
 import { MatIconModule } from '@angular/material/icon';
+import { StorageService } from '../../storage/storage.service'
+import { NotificationService } from '../../../shared/service/notification.service'
 @Component({
   selector: 'app-lead-form',
   imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, CommonModule, FormInput, FormDateInput, MatIconModule],
@@ -27,8 +29,11 @@ export class LeadForm implements OnInit, OnDestroy {
   private leadService = inject(LeadService)
   private lead$: Observable<Lead | null>
   private stepper = viewChild.required(MatStepper)
+  private storage = inject(StorageService)
+  private notification = inject(NotificationService)
+
   stepperOrientation$: Observable<StepperOrientation>
-  private readonly unsub$ = new Subject<void>()
+  
   personalForm = this._formBuilder.group({
     full_name: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(255)],
@@ -65,7 +70,7 @@ export class LeadForm implements OnInit, OnDestroy {
   })
 
   private readonly leadForm: FormGroup[] = [this.personalForm, this.addressForm, this.contactForm]
-
+  private readonly unsub$ = new Subject<void>()
 
   constructor() {
     this.lead$ = this.leadService.lead$
@@ -121,14 +126,12 @@ export class LeadForm implements OnInit, OnDestroy {
     response$.pipe(
       takeUntil(this.unsub$),
       catchError((err: HttpError<ValidationErrorResponse>) => {
-        for (const violation of Object.values(err.error.violations)) {
-          this.stepper().selectedIndex = lastChangedForm
-        this.displayError(violation)
-        }
+        this.handleInputErrors(err.error.violations,lastChangedForm)
         return of(null)
       }),
       filter(Boolean))
       .subscribe(() => {
+        this.notification.success('Inscrição realizada com sucesso')
         this.stepper().steps.forEach((step) => step.hasError = false)
       })
 
@@ -183,6 +186,13 @@ export class LeadForm implements OnInit, OnDestroy {
     })
   }
 
+  private handleInputErrors(violations:Violation[], errorIndex:number) {
+    for (const violation of violations) {
+      this.stepper().selectedIndex = errorIndex
+      this.displayError(violation)
+    }
+  }
+
   private displayError(violation: Violation) {
     this.leadForm.forEach((form, index) => {
       const control = form.get(violation.propertyPath)
@@ -198,5 +208,13 @@ export class LeadForm implements OnInit, OnDestroy {
     if (step) {
       step.hasError = value
     }
+  }
+
+  resetForm()
+  {
+    console.log('teste')
+    this.stepper()
+    this.storage.removeKey('uuid')
+    this.leadForm.forEach((form)=> form.reset())
   }
 }
