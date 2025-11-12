@@ -106,7 +106,6 @@ export class LeadForm implements OnInit, OnDestroy {
   }
 
   private submit(lastChangedForm: number) {
-    console.log(1)
     const leadFormData: Lead = {
       ...this.personalForm.getRawValue(),
       ...this.addressForm.getRawValue(),
