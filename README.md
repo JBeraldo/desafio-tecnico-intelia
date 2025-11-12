@@ -1,9 +1,3 @@
-Coletando informações do workspace# 🎉 Intelia Event Registration Platform
-
-Uma aplicação moderna de registro de interesse para eventos, construída com **Angular 20**, **Symfony 7.3** e **Docker**.
-
----
-
 ## 📋 Sobre o Projeto
 
 Este é um sistema de cadastro de leads em múltiplas etapas para o evento Intelia 2025. A aplicação utiliza uma arquitetura full-stack containerizada com:
