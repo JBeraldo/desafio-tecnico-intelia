@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\LeadRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: LeadRepository::class)]
@@ -16,7 +15,7 @@ class Lead
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $fullName = null;
+    private ?string $full_name = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $birth_date = null;
@@ -24,28 +23,29 @@ class Lead
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $street = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $street_number = null;
 
-    #[ORM\Column(length: 8)]
+    #[ORM\Column(length: 8, nullable: true)]
     private ?string $postal_code = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $state = null;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $landline = null;
 
-    #[ORM\Column(length: 11)]
+    #[ORM\Column(length: 11, nullable: true)]
     private ?string $cellphone = null;
 
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     private ?Uuid $uuid = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city = null;
 
     public function getId(): ?int
     {
@@ -54,12 +54,12 @@ class Lead
 
     public function getFullName(): ?string
     {
-        return $this->fullName;
+        return $this->full_name;
     }
 
-    public function setFullName(string $fullName): static
+    public function setFullName(string $full_name): static
     {
-        $this->fullName = $fullName;
+        $this->full_name = $full_name;
 
         return $this;
     }
@@ -162,12 +162,24 @@ class Lead
 
     public function getUuid(): ?Uuid
     {
-        return $this->uuid;
+        return  $this->uuid;
     }
 
     public function setUuid(Uuid $uuid): static
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): static
+    {
+        $this->city = $city;
 
         return $this;
     }

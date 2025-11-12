@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Lead;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Lead>
@@ -16,28 +17,18 @@ class LeadRepository extends ServiceEntityRepository
         parent::__construct($registry, Lead::class);
     }
 
-    //    /**
-    //     * @return Lead[] Returns an array of Lead objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function store(Lead $lead): string
+    {
+        $uuid = Uuid::v6();
+        $lead->setUuid($uuid);
+        $this->getEntityManager()->persist($lead);
+        $this->getEntityManager()->flush();
+        return $uuid->toString();
+    }
 
-    //    public function findOneBySomeField($value): ?Lead
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function update(Lead $lead)
+    {
+        $this->getEntityManager()->persist($lead);
+        $this->getEntityManager()->flush();
+    }
 }
