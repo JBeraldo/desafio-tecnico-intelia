@@ -11,13 +11,13 @@ import { LeadService } from '../lead.service'
 import { CommonModule } from '@angular/common'
 import { FormInput } from '../../../shared/components/form-input/form-input'
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input'
-import { catchError, debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, takeUntil} from 'rxjs'
+import { catchError, debounceTime, distinctUntilChanged, exhaustMap, filter, map, Observable, of, Subject, switchMap, takeUntil } from 'rxjs'
 import { BreakpointObserver } from '@angular/cdk/layout'
-import { ValidationErrorResponse, Violation } from '../../../shared/shared.types'
-
+import { HttpError, ValidationErrorResponse, Violation } from '../../../shared/shared.types'
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-lead-form',
-  imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, CommonModule, FormInput, FormDateInput],
+  imports: [MatCardModule, MatButtonModule, MatStepperModule, ReactiveFormsModule, FormsModule, CommonModule, FormInput, FormDateInput, MatIconModule],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.scss',
 })
@@ -45,13 +45,13 @@ export class LeadForm implements OnInit, OnDestroy {
       validators: [Validators.required, Validators.maxLength(255)],
     }),
     street_number: new FormControl<string | null>(null, {
-      validators: [Validators.required],
+      validators: [Validators.required,Validators.pattern('/^[0-9]+$/')],
     }),
     postal_code: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.maxLength(8)],
     }),
     city: new FormControl<string | null>(null, {
-      validators: [Validators.required, Validators.maxLength(255)],
+      validators: [Validators.required, Validators.maxLength(255),Validators.pattern('^[A-Za-z]+$')],
     }),
     state: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.pattern('^[A-Z]{2}$'), Validators.maxLength(2)],
@@ -78,18 +78,19 @@ export class LeadForm implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.lead$.pipe(takeUntil(this.unsub$), filter(Boolean)).subscribe((lead) => {
       this.patchForms(lead)
-      this.markAsPristineForm()
     })
-    if (this.leadService.uuid) {
-      this.leadService.get().pipe(takeUntil(this.unsub$)).subscribe((response) => {
-        this.watchPostalCode()
-        this.setStepperPosition(response.lead.step ?? 0)
-      })
-    }
-    else {
-      this.watchPostalCode()
+
+    if (!this.leadService.uuid) {
+      this.watchPostalCode();
+      return;
     }
 
+    this.leadService.get()
+      .pipe(takeUntil(this.unsub$))
+      .subscribe((response) => {
+        this.setStepperPosition(response.lead.step ?? 0);
+        this.watchPostalCode();
+      });
   }
 
   ngOnDestroy(): void {
@@ -98,7 +99,7 @@ export class LeadForm implements OnInit, OnDestroy {
   }
 
   next() {
-    const lastChangedForm = [...this.leadForm].reverse().findIndex(g => g.dirty)
+    const lastChangedForm = this.leadForm.map(g => g.dirty).lastIndexOf(true);
     if (lastChangedForm != -1) {
       this.submit(lastChangedForm)
     }
@@ -115,21 +116,21 @@ export class LeadForm implements OnInit, OnDestroy {
 
     const response$ = leadFormData.uuid
       ? this.leadService.update(leadFormData)
-      : this.leadService.store(leadFormData);
+      : this.leadService.store(leadFormData)
 
     response$.pipe(
       takeUntil(this.unsub$),
-      catchError((err: { error: ValidationErrorResponse }) => {
-        for (const [index, violation] of Object.entries(err.error.violations)) {
-          this.displayError(violation)
+      catchError((err: HttpError<ValidationErrorResponse>) => {
+        for (const violation of Object.values(err.error.violations)) {
+          this.stepper().selectedIndex = lastChangedForm
+        this.displayError(violation)
         }
         return of(null)
       }),
-      filter(Boolean)
-      )
-    .subscribe(() => { this.stepper().steps.forEach((step) => step.hasError = false)
-    }
-    )
+      filter(Boolean))
+      .subscribe(() => {
+        this.stepper().steps.forEach((step) => step.hasError = false)
+      })
 
     this.markAsPristineForm()
   }
@@ -152,6 +153,7 @@ export class LeadForm implements OnInit, OnDestroy {
     for (const group of this.leadForm) {
       group.patchValue({ ...lead })
     }
+    this.markAsPristineForm()
   }
 
   private watchPostalCode() {

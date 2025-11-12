@@ -7,7 +7,7 @@ import {
 import { StorageService } from '../storage/storage.service'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '../../../environments/environments'
-import { ViaCepResponse } from '../../shared/shared.types'
+import { GenericResponse, HttpError, ViaCepResponse } from '../../shared/shared.types'
 
 @Injectable({ providedIn: 'root' })
 export class LeadService {
@@ -36,8 +36,11 @@ export class LeadService {
 
     get(): Observable<LeadGetResponse> {
         return this.http.get<LeadGetResponse>(`${this.url}/lead/${this.uuid}`)
-            .pipe(catchError((err) => {
-                this.storage.removeKey('uuid')
+            .pipe(catchError((err:HttpError<GenericResponse>) => {
+                if(err.status === 404)
+                {
+                    this.storage.removeKey('uuid')
+                }
                 return throwError(() => err)
             }),
         tap((response) => this.leadSubject.next(response.lead)))

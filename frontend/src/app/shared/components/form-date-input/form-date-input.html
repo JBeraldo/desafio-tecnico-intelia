@@ -22,4 +22,7 @@
     @if (control().hasError('matDatepickerMax')) {
     <mat-error>Data muito recente</mat-error>
     }
+    @if (control().hasError('custom')) {
+    <mat-error>{{control().getError('custom')?.message}}</mat-error>
+    }
 </mat-form-field>

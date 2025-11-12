@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from "@angular/common/http"
+
 export const MY_DATE_FORMATS = {
   parse: {
     dateInput: 'P',
@@ -25,12 +27,21 @@ export interface ViaCepResponse {
   siafi: number,
   erro?: boolean
 }
+export type HttpError<T> = Omit<HttpErrorResponse, 'error'> & {
+  error: T;
+};
+
+
 export interface ValidationErrorResponse {
   type: string;
   title: string;
   status: number;
   detail: string;
   violations: Violation[];
+}
+
+export interface GenericResponse {
+  message:string
 }
 
 export interface Violation {
