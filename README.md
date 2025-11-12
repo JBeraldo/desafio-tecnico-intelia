@@ -53,7 +53,7 @@ APP_SECRET=seu-secret-aleatorio
 
 DB_USERNAME=default_user
 DB_DATABASE=default_database
-DB_PASSWORD=!changeMe
+DB_PASSWORD=!changeMe!
 DB_ROOT_PASSWORD=!changeMe!
 
 DEFAULT_URI=http://localhost
