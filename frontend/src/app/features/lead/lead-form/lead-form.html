@@ -1,7 +1,7 @@
 <mat-card appearance="outlined">
     <mat-card-header>
-        <mat-card-title></mat-card-title>
-        <mat-card-subtitle></mat-card-subtitle>
+        <mat-card-title>Cadastro de Interesse</mat-card-title>
+        <mat-card-subtitle>Evento Intelia 2025</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -12,11 +12,11 @@
                 <form [formGroup]="personalForm" class="grid grid-cols-1  gap-4">
                     <ng-template matStepLabel>Dados básicos</ng-template>
 
-                    <app-input label="Nome Completo" placeholder="José Silveira"
+                    <app-input label="Nome Completo" placeholder="Seu nome"
                         [control]="personalForm.controls.full_name" >
                     </app-input>
 
-                    <app-input label="Email" placeholder="jose.silveira@intelia.com.br"
+                    <app-input label="Email"  placeholder="Seu melhor e-mail"
                         [control]="personalForm.controls.email" type="email" >
                     </app-input>
 
@@ -35,21 +35,21 @@
                 <form [formGroup]="addressForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <ng-template matStepLabel>Dados de endereço</ng-template>
 
-                    <app-input  label="CEP" placeholder="84503-407" mask="00000-000"
+                    <app-input  label="CEP" placeholder="00000-000" mask="00000-000"
                         [control]="addressForm.controls.postal_code" >
                     </app-input>
 
-                    <app-input label="Número" placeholder="1197" type="number" mask="0*"
+                    <app-input label="Número" placeholder="" type="number" mask="0*"
                         [control]="addressForm.controls.street_number">
                     </app-input>
 
-                    <app-input label="UF" placeholder="PR" mask="SS" [control]="addressForm.controls.state" >
+                    <app-input label="UF" placeholder="UF" mask="SS" [control]="addressForm.controls.state" >
                     </app-input>
 
-                    <app-input label="Cidade" placeholder="Irati" [control]="addressForm.controls.city" >
+                    <app-input label="Cidade" placeholder="" [control]="addressForm.controls.city" >
                     </app-input>
 
-                    <app-input label="Logradouro" class="md:col-span-2" placeholder="Abílio Carvalho Bastos"
+                    <app-input label="Logradouro" class="md:col-span-2" placeholder="Logradouro"
                         [control]="addressForm.controls.street" >
                     </app-input>
 
@@ -81,9 +81,13 @@
             </mat-step>
 
             <!-- STEP 4 -->
-            <mat-step>
+            <mat-step >
                 <ng-template matStepLabel>Concluído</ng-template>
-                <p>Você finalizou o cadastro.</p>
+                <div class="flex justify-center flex-col items-center">
+                    <mat-icon color="primary" aria-hidden="false" aria-label="success" fontIcon="task_alt"></mat-icon>
+                    <p class="font-medium font-xl">Parabéns, você acaba de se inscrever para um evento da Intelia</p>
+                </div>
+
                 <div>
                     <button matButton matStepperPrevious>Voltar</button>
                 </div>
