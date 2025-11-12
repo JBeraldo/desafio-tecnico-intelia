@@ -36,21 +36,24 @@ class LeadRequest
         constraints: [
             new Rule\Required(groups: ['address']),
             new Assert\Length(max: 255, groups: ['personal']),
-            new Assert\Regex(pattern: '/^[0-9]+$/',match: false,groups: ['personal'], message: 'lead.regex.number')
+            new Assert\Regex(pattern: '/^\D+$/',match: false,groups: ['personal'], message: 'lead.regex.number')
         ]
     )]
     public ?string $street_number = null;
     #[Assert\When(
         expression: 'this.step === 1',
-        constraints: [new Rule\Required(groups: ['address'])]
+        constraints: [
+            new Rule\Required(groups: ['address']),
+            new Assert\Length(max: 8, groups: ['address']),
+            new Assert\Regex(pattern: '/^\D+$/',match: false,groups: ['address'], message: 'lead.regex.number')
+        ]
     )]
     public ?string $postal_code = null;
     #[Assert\When(
         expression: 'this.step === 1',
         constraints: [
             new Rule\Required(groups: ['address']),
-            new Assert\Length(max: 8, groups: ['address']),
-            new Assert\Regex(pattern: '/^[0-9]+$/',match: false,groups: ['personal'], message: 'lead.regex.number')
+            new Assert\Length(max: 2, groups: ['address']),
         ]
     )]
     public ?string $state = null;
@@ -58,7 +61,6 @@ class LeadRequest
         expression: 'this.step === 1',
         constraints: [
             new Rule\Required(groups: ['address']),
-            new Assert\Length(max: 2, groups: ['address'])
         ]
     )]
     public ?string $city = null;

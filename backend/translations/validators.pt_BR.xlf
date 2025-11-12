@@ -4,10 +4,10 @@
         <body>
             <trans-unit id="lead.name.no_digits">
                 <source>lead.name.no_digits</source>
-                <target>Seu nome conter números</target>
+                <target>Seu nome não pode conter números</target>
             </trans-unit>
-            <trans-unit id="lead.regex.numbers">
-                <source>lead.regex.numbers</source>
+            <trans-unit id="lead.regex.number">
+                <source>lead.regex.number</source>
                 <target>Este campo só permite números</target>
             </trans-unit>
         </body>
