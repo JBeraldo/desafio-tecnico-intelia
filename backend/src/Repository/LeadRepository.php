@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Lead;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -30,5 +32,18 @@ class LeadRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($lead);
         $this->getEntityManager()->flush();
+    }
+
+    public function findOneByUuid($uuid): Lead | null 
+    {
+        try{
+         
+          $lead = $this->findOneBy(["uuid" => $uuid]);
+        
+          return $lead;
+        }
+        catch(ConversionException $e){
+            return null;
+        }
     }
 }

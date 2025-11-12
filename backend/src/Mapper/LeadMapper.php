@@ -5,6 +5,7 @@ namespace App\Mapper;
 use App\Dto\LeadDto;
 use App\Entity\Lead;
 use App\Request\LeadRequest;
+use DateTimeImmutable;
 use Symfony\Component\Uid\Uuid;
 
 class LeadMapper
@@ -16,11 +17,11 @@ class LeadMapper
     {
         $lead = $target ? $target: new Lead();
         $lead->setFullName($source->full_name ?? $lead->getFullName());
-        $lead->setBirthDate($source->birth_date ?? $lead->getBirthDate());
+        $lead->setBirthDate(new DateTimeImmutable($source->birth_date) ?? $lead->getBirthDate());
         $lead->setEmail($source->email ?? $lead->getEmail());
+        $lead->setUuid(Uuid::fromString($source->uuid ));
         if ($source->step >= 1)
         {
-            $lead->setUuid(Uuid::fromString($source->uuid ));
             $lead->setStreet($source->street ?? $lead->getStreet());
             $lead->setStreetNumber($source->street_number ?? $lead->getStreetNumber());
             $lead->setPostalCode($source->postal_code ?? $lead->getPostalCode());
@@ -32,7 +33,6 @@ class LeadMapper
             $lead->setLandline($source->landline ?? $lead->getLandline());
             $lead->setCellphone($source->cellphone ?? $lead->getCellphone());
         } 
-
         return $lead;
     }
 
@@ -54,8 +54,20 @@ class LeadMapper
         $dto->city = $lead->getCity();
         $dto->landline = $lead->getLandline();
         $dto->cellphone = $lead->getCellphone();
-        $dto->step = ($dto->cellphone ? 3 : $dto->street) ? 2 : 1;
-
+        $dto->step = self::checkStep($dto);
         return $dto;
     }
+
+    private static function checkStep(LeadDto $dto){
+        $steps = 
+        [
+            "1" => !empty($dto->uuid),
+            "2" => !empty($dto->street),
+            "3" => !empty($dto->cellphone),
+        ];
+
+        $completed_steps = array_filter($steps, fn ($item) => !!$item);
+        $max_step = max(array_keys($completed_steps));
+        return $max_step;
+    }   
 }

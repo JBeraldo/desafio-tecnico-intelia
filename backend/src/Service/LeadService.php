@@ -19,14 +19,16 @@ class LeadService {
     }
 
     function update(LeadRequest $leadRequest): void {
-        $lead = $this->repository->findOneBy(['uuid' => $leadRequest->uuid]);
+        $lead = $this->repository->findOneByUuid($leadRequest->uuid);
         $lead = $this->mapper->toEntity($leadRequest,$lead);
         $this->repository->update($lead);
     }
 
     function find(string $uuid): LeadDto | null {
-        $lead = $this->repository->findOneBy(['uuid' => $uuid]);
-        $leadDto = $this->mapper::fromEntity($lead);
-        return $leadDto;
+        $lead = $this->repository->findOneByUuid($uuid);
+        if ($lead === null) {
+            return null;
+        }
+        return $this->mapper::fromEntity($lead);
     }
 }
