@@ -5,7 +5,7 @@
     </mat-card-header>
 
     <mat-card-content>
-        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="submit()" [linear]="true" #stepper>
+        <mat-stepper [orientation]="(stepperOrientation | async)!" (selectionChange)="submit($event.previouslySelectedIndex)" [linear]="true" #stepper>
 
             <!-- STEP 1 -->
             <mat-step [stepControl]="firstStepForm">
@@ -13,7 +13,7 @@
                     <ng-template matStepLabel>Dados básicos</ng-template>
 
                     <app-input label="Nome Completo" placeholder="José Silveira"
-                        [control]="firstStepForm.controls.fullName" >
+                        [control]="firstStepForm.controls.full_name" >
                     </app-input>
 
                     <app-input label="Email" placeholder="jose.silveira@intelia.com.br"
@@ -21,7 +21,7 @@
                     </app-input>
 
                     <app-date-input label="Data de Nascimento" placeholder="DD/MM/YYYY"
-                        [control]="firstStepForm.controls.birthDate" >
+                        [control]="firstStepForm.controls.birth_date" >
                     </app-date-input>
 
                     <div>

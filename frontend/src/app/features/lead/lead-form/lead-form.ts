@@ -10,6 +10,7 @@ import { FormInput } from '../../../shared/components/form-input/form-input';
 import { FormDateInput } from '../../../shared/components/form-date-input/form-date-input';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 @Component({
   selector: 'app-lead-form',
@@ -24,16 +25,16 @@ export class LeadForm implements OnInit, OnDestroy {
   private lead$: Observable<Lead | null>
 
   firstStepForm = this._formBuilder.group({
-    fullName: [null, [Validators.required]],
-    birthDate: [null, [Validators.required]],
-    email: [null, [Validators.required, Validators.email]]
+    full_name: [null, [Validators.required,Validators.maxLength(255)]],
+    birth_date: [null, [Validators.required]],
+    email: [null, [Validators.required, Validators.email,Validators.maxLength(255)]]
   });
   secondStepForm = this._formBuilder.group({
-    street: [null, [Validators.required]],
-    street_number: [null, [Validators.required]],
-    postal_code: [null, [Validators.required]],
-    city: [null, [Validators.required]],
-    state: [null, [Validators.required, Validators.pattern('^[A-Z]{2}$')]]
+    street: [null, [Validators.required,Validators.maxLength(255)]],
+    street_number: [0, [Validators.required]],
+    postal_code: [null, [Validators.required,Validators.maxLength(8)]],
+    city: [null, [Validators.required,Validators.maxLength(255)]],
+    state: [null, [Validators.required, Validators.pattern('^[A-Z]{2}$'),Validators.maxLength(2)]]
   });
   thirdStepForm = this._formBuilder.group({
     landline: [null],
@@ -66,16 +67,17 @@ export class LeadForm implements OnInit, OnDestroy {
     this.unsub$.complete()
   }
 
-  submit() {
+  submit(index:number) {
     let hasChanged = this.leadForm.some((group) => group.dirty)
     if (hasChanged) {
       let leadFormData: Lead = {
         ...this.firstStepForm.getRawValue(),
         ...this.secondStepForm.getRawValue(),
-        ...this.thirdStepForm.getRawValue()
+        ...this.thirdStepForm.getRawValue(),
+        step: index
       }
 
-      this.leadService.store(leadFormData);
+      this.leadService.updateUser(leadFormData).subscribe(()=> console.log('a'));
 
       for (let step of this.leadForm) {
         step.markAsPristine()
