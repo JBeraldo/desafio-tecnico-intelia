@@ -26,7 +26,7 @@ services:
             context: ./
             target: prod
             dockerfile: ./backend/Dockerfile
-        image: php83-fpm
+        image: php85-fpm
         restart: unless-stopped
         working_dir: /var/www/
         healthcheck:

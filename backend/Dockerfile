@@ -1,4 +1,4 @@
-FROM php:8.4.8-fpm AS base
+FROM php:8.5-fpm-alpine AS base
 
 WORKDIR /var/www
 
@@ -12,12 +12,10 @@ ENV PHP_OPCACHE_ENABLE="0" \
     PHP_OPCACHE_JIT="0"
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev libpq-dev \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
-
+RUN apk add \
+    git curl zip unzip libpng-dev oniguruma-dev libxml2-dev libpq-dev linux-headers icu-dev
 # Install PHP extensions
-RUN docker-php-ext-install mbstring exif pcntl bcmath sockets opcache pdo pdo_mysql intl
+RUN docker-php-ext-install mbstring exif pcntl bcmath sockets pdo pdo_mysql intl
 
 # Copy PHP config files
 COPY docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
